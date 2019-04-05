@@ -48,9 +48,9 @@ class App extends Component {
         return (
             <div className="App">
                 <div className="container p-5">
-                    <div className="row">
-                        <div className='col-xl-12'>
-                            <h1>Fellow Readers</h1>
+                    <div className="row justify-content-center">
+                        <div className='col-xl-4 text-center p-3 mb-5 border border-success'>
+                            <h1>Aloe</h1>
                         </div>
                     </div>
                     <div className='row'>
