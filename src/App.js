@@ -3,6 +3,7 @@ import './App.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import firebase from 'firebase';
 import config from './config';
+import AdminPanel from "./AdminPanel";
 
 class App extends Component {
     constructor(props) {
@@ -10,7 +11,8 @@ class App extends Component {
         firebase.initializeApp(config);
 
         this.state = {
-            users: []
+            users: [],
+            admin: Boolean,
         };
     }
 
@@ -34,6 +36,9 @@ class App extends Component {
     };
 
     componentDidMount() {
+        this.setState({
+            admin: true
+        });
         this.getUserData();
     }
 
@@ -44,60 +49,33 @@ class App extends Component {
     }
 
     render() {
-        const { users } = this.state;
+        const { users, admin } = this.state;
         return (
             <div className="App">
                 <div className="container p-5">
+                    <div className="row">
+                        <div className='col-xl-12 text-right'>
+                            <button className='btn btn-success' onClick={this.toggleAdmin}>Administer</button>
+                        </div>
+                    </div>
                     <div className="row justify-content-center">
                         <div className='col-xl-4 text-center p-3 mb-5 border border-success'>
                             <h1>Aloe</h1>
                         </div>
                     </div>
-                    <div className='row'>
-                        <div className='col-xl-12'>
-                            {
-                                users
-                                    .map(user =>
-                                        <div key={user.uid} className="card float-left" style={{width: '18rem', marginRight: '1rem'}}>
-                                            <div className="card-body">
-                                                <h5 className="card-title">{ user.name }</h5>
-                                                <p className="card-text">{ user.role }</p>
-                                                <p className="card-text">{ user.email }</p>
-                                                <button onClick={ () => this.removeData(user) } className="btn btn-link">Delete</button>
-                                                <button onClick={ () => this.updateData(user) } className="btn btn-link">Edit</button>
-                                            </div>
-                                        </div>
-                                    )
-                            }
-                        </div>
-                    </div>
-                    <div className='row mt-5'>
-                        <div className='col-xl-12'>
-                            <h1>Add new club member here</h1>
-                            <form onSubmit={ this.handleSubmit }>
-                                <div className="form-row mt-5">
-                                    <input type='hidden' ref='uid' />
-                                    <div className="form-group col-md-6">
-                                        <label>Name</label>
-                                        <input type="text" ref='name' className="form-control" placeholder="Name" />
-                                    </div>
-                                    <div className="form-group col-md-6">
-                                        <label>Email</label>
-                                        <input type="email" ref='email' className="form-control" placeholder="Email" />
-                                    </div>
-                                    <div className="form-group col-md-6">
-                                        <label>Role</label>
-                                        <input type="text" ref='role' className="form-control" placeholder="Role" />
-                                    </div>
-                                </div>
-                                <button type="submit" className="btn btn-primary">Save</button>
-                            </form>
-                        </div>
-                    </div>
+                    { admin &&
+                        <AdminPanel users={users}/>
+                    }
                 </div>
             </div>
         );
     }
+
+    toggleAdmin = () => {
+        this.setState({
+            admin: !this.state.admin
+        });
+    };
 
     handleSubmit = (event) => {
         event.preventDefault();
